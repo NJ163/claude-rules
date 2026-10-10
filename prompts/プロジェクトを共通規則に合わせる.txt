@@ -1,0 +1,54 @@
+前提（2026-10-06 から）
+- coder 系サブエージェント（coder／coder-medium／coder-xhigh）と「実装の後の手順」（/code-review の level の選び方を含む）は、全プロジェクト共通の規則として C:\Projects\shared\claude-rules\（git 管理）に置いてある：
+  - agents\coder.md・coder-medium.md・coder-xhigh.md（ホームの .claude\agents はここへのジャンクション）
+  - CLAUDE.md（ホームの .claude\CLAUDE.md が取り込む＝Claude Code がどのプロジェクトでも毎回読む）
+- 規則を変えるときは、このフォルダを直すだけで全プロジェクトに効く。各プロジェクトには写さない。つなぎ方は同じフォルダの README.md。
+- 各プロジェクトで要るのは、(1) 同じ名前の定義を消すこと（プロジェクト側が優先され、共通の更新が届かなくなる）、(2) 共通の coder が読む規約（検証コマンドなど）を AGENTS.md に揃えること、の2つだけ。下のプロンプトはそのためのもの。
+
+
+プロンプト①　AGENTS.md 化が済んだプロジェクト用（CLAUDE.md が @AGENTS.md を読み込む形）
+
+このプロジェクトを、全プロジェクト共通の coder 系サブエージェントに合わせてください。日本語で進めてください。
+
+1. まず読む：根の AGENTS.md と CLAUDE.md、サブフォルダの AGENTS.md／CLAUDE.md（あれば）、C:/Projects/shared/claude-rules の CLAUDE.md と agents/coder.md（共通の規則）。
+2. .claude/agents/ を見る。
+   - coder.md・coder-medium.md・coder-xhigh.md（共通と同じ名前）があれば、プロジェクト固有の中身（規約・検証コマンド・禁止事項）が AGENTS.md に書かれているか確かめ、無いものを AGENTS.md へ移してから、その3ファイルを消す（git 管理なら git rm）。
+   - ほかの名前の定義（例 impl-*・review-*・○○-worker など）は消さない。役割が coder 系と重なるものは、整理案を最終報告に書く。
+3. 共通の coder は「根の AGENTS.md を Read で開き、その読む順に従う」だけで動く。AGENTS.md（または読む順で指す文書）に次が揃っているか確かめ、欠けていれば短い節（例「実装と検証」）を足す。中身は丸写しせず「どこを読めばよいか」を示す：
+   - このプロジェクト固有の重要な規約と、スキーマ・設定などの正本の場所
+   - 実装後に回す検証コマンド（型チェック・lint・ビルド・テストなど）
+   - コミットの決まり（無ければ「ユーザーの確認を待つ」）
+4. AGENTS.md の「Claude Code にしか見えないもの」に当たる節（無ければ末尾近くに作る）へ、次の1行だけを足す。サブエージェントの使い分けや実装後の手順の文が既にあれば、この1行に置き換える（同じ規則を2か所に書かない）：
+   - 「サブエージェント（coder 系）の使い分けと、実装の後の手順（/code-review の level の選び方を含む）は全プロジェクト共通＝C:\Projects\shared\claude-rules\（CLAUDE.md と agents\coder*.md・ホームの .claude から読み込む）。このリポの .claude/agents/ に同じ名前を作らない。」
+5. 大きさの上限を守る（Codex は根から作業ディレクトリまでの AGENTS.md の合計 32 KiB で打ち切る。目安は CRLF 換算で合計 24 KiB 未満。確かめ方＝cat AGENTS.md サブフォルダ/AGENTS.md | tr -d '\r' | sed 's/$/\r/' | wc -c）。
+   既に上限を超えているなら、手順4の1行以外は足さず、超過の量と「docs へ移せそうな節」の案を最終報告に書く（勝手に削らない）。
+6. 書き換えたファイルに NUL や制御文字が無いことを確かめる（tr -cd '\000\010' < ファイル | wc -c が 0）。Windows PowerShell 5.1 の Set-Content／Out-File で日本語を書かない。
+7. 変更したファイルと差分を見せる。コミットはこのプロジェクトの決まりに従う（決まりが無ければ私の確認を待つ）。
+
+
+プロンプト②　AGENTS.md がまだ無いプロジェクト用（CLAUDE.md だけ、またはどちらも無い）＝AGENTS.md 化も併せて行う
+
+このプロジェクトを AGENTS.md 化し、併せて全プロジェクト共通の coder 系サブエージェントに合わせてください。日本語で進めてください。
+手本は C:\Projects\CRM（AGENTS.md・web/AGENTS.md・CLAUDE.md・web/CLAUDE.md）。構成と書き方を読んで倣う（CRM 固有の中身は持ち込まない）。
+
+1. まず読む：根とサブフォルダの CLAUDE.md（あれば）、手本の C:\Projects\CRM\AGENTS.md と CLAUDE.md、C:/Projects/shared/claude-rules の CLAUDE.md と agents/coder.md（共通の規則）。
+   CLAUDE.md が無ければ、代わりに README・仕様書（SPEC など）・package.json などのビルド設定・.claude/agents/ の既存定義・Claude Code の自動メモリ（C:\Users\owner\.claude\projects\<このプロジェクト>\memory\）を読み、規約・検証コマンド・コミットの決まりを拾う。
+2. AGENTS.md 化：
+   - CLAUDE.md があれば、根の CLAUDE.md を AGENTS.md へ移す（git 管理なら git mv で履歴を残す）。新しい CLAUDE.md は「@AGENTS.md」の1行だけにする。サブフォルダの CLAUDE.md も同じ形にする。
+   - CLAUDE.md が無ければ、手順1で拾ったことから根の AGENTS.md を新しく書き、CLAUDE.md を「@AGENTS.md」の1行で作る。短くてよい（共通の coder が要るのは、固有の規約と正本の場所・検証コマンド・コミットの決まり）。拾えなかったことは推測で書かず、最終報告で私に聞く。メモリから上げた規約は、メモリ側に「AGENTS.md へ上げた」と書く。
+   - 根の AGENTS.md は手本に倣って、次の節で並べ直す（無い節は作らなくてよい）：
+     - 冒頭＝この文書はどの AI エージェント（Claude Code・GPT／Codex・Cursor など）にも読まれる共通の規約であること・CLAUDE.md は @AGENTS.md を読み込む入口だけであること（移した日付も書く）
+     - 読む順（作業手順のルート）＝サブフォルダに AGENTS.md があれば、その読み込まれ方の違いを書く：Codex は根から作業ディレクトリまでの AGENTS.md だけを自動で読み、文中の参照は辿らない（信頼していないプロジェクトでは読まない＝trusted にしておく）／Claude Code はサブフォルダの CLAUDE.md を、そのフォルダのファイルを Read ツールで開いたときだけ読む＝自動で載ったと思い込まない
+     - 全体に効く規約（日本語・文字化けと NUL の注意・git／push の決まり・作業前に一言いう変更 など、元の CLAUDE.md にあるもの）
+     - Claude Code にしか見えないもの＝自動メモリの場所（C:\Users\owner\.claude\projects\<このプロジェクト>\memory\MEMORY.md）・.claude/settings.local.json・それに手順4の1行
+     - この文書の育て方＝毎回の文脈に載るものだけを置く・経緯や設計は docs へ・同じ事実を2か所に書かない・大きさの上限（手順5）と確かめ方
+   - 元の CLAUDE.md の内容を1行も失わない。移した後、元の各行がどこへ行ったか（そのまま／言い換え／docs へ移動）を突き合わせ、最終報告に対応を短く書く。Claude Code だけに効く記述（.claude/ の設定・メモリ・スラッシュコマンドなど）は「Claude Code にしか見えないもの」へ寄せる。
+   - Claude Code の自動メモリに「CLAUDE.md の〜」と書いた記録があれば、AGENTS.md を指すように直す。
+3. 共通の coder 系に合わせる（プロンプト①の手順2〜4と同じ）：
+   - .claude/agents/ に coder.md・coder-medium.md・coder-xhigh.md があれば、固有の中身を AGENTS.md へ移してから消す。ほかの名前の定義は消さず、重なりがあれば整理案を報告する。
+   - AGENTS.md に、固有の規約と正本の場所・実装後に回す検証コマンド・コミットの決まりが揃っているか確かめ、欠けていれば短い節を足す。
+4. 「Claude Code にしか見えないもの」へ次の1行を足す（使い分けや実装後の手順の文が元の CLAUDE.md にあれば、この1行に置き換える）：
+   - 「サブエージェント（coder 系）の使い分けと、実装の後の手順（/code-review の level の選び方を含む）は全プロジェクト共通＝C:\Projects\shared\claude-rules\（CLAUDE.md と agents\coder*.md・ホームの .claude から読み込む）。このリポの .claude/agents/ に同じ名前を作らない。」
+5. 大きさの上限を守る（根とサブフォルダの AGENTS.md の合計を CRLF 換算で 24 KiB 未満。確かめ方＝cat AGENTS.md サブフォルダ/AGENTS.md | tr -d '\r' | sed 's/$/\r/' | wc -c）。超えるなら、経緯・設計の記述を docs へ移す案を出す（勝手に削らない）。
+6. 書き換えたファイルに NUL や制御文字が無いことを確かめる（tr -cd '\000\010' < ファイル | wc -c が 0）。Windows PowerShell 5.1 の Get-Content／Set-Content／Out-File で日本語を読み書きしない。
+7. 変更したファイルと差分を見せる。コミットはこのプロジェクトの決まりに従う（決まりが無ければ私の確認を待つ）。git 管理でないプロジェクトは、書き換える前に元の CLAUDE.md の写しを残す。
