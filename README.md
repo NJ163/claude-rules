@@ -10,6 +10,7 @@ C:\Projects 配下のどのプロジェクトでも効く、Claude Code 用の�
 | `CLAUDE.md` | サブエージェントの使い分け・実装の後の手順（`/code-review` の level の選び方） |
 | `agents/coder.md` | 実装担当サブエージェント（effort high）。規則の本文はここだけ |
 | `agents/coder-medium.md`・`agents/coder-xhigh.md` | effort 違い。本文は「coder.md を読め」だけ |
+| `agents/verifier.md` | 実機／画面の検証担当（Sonnet・effort medium・2026-10-13）。親のチェック表どおりに操作して値と画面写真を返す（CLAUDE.md の「実機／画面の検証」） |
 | `prompts/プロジェクトを共通規則に合わせる.txt` | 各プロジェクトを共通規則に合わせる（と AGENTS.md 化する）ためのプロンプト |
 | `cloud/setup.sh` | クラウドの環境の初期化スクリプト（下の「クラウド」） |
 
@@ -42,7 +43,7 @@ New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\agents" -Target "C:\
 claude -p "Agent ツールで使えるサブエージェントの種類の名前だけを1行に1つ列挙して" --model haiku
 ```
 
-`coder`・`coder-medium`・`coder-xhigh` が出れば効いている。
+`coder`・`coder-medium`・`coder-xhigh`・`verifier` が出れば効いている。
 
 ## クラウド（claude.ai/code）＝環境の初期化スクリプトで取ってくる（2026-10-10）
 
