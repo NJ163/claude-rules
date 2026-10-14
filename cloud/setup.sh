@@ -1,5 +1,5 @@
 #!/bin/bash
-# rules 2026-10-14  ← claude-rules を push したら5分ほど待ってから、この日付を書き換える（次の新しいセッションから取り直す）
+# rules 2026-10-14b  ← claude-rules を push したら5分ほど待ってから、この日付を書き換える（次の新しいセッションから取り直す）
 # claude.ai/code の環境の「初期化スクリプト」に、このファイルの中身をそのまま貼る（正本はこのファイル＝README.md）。
 BASE=https://raw.githubusercontent.com/NJ163/claude-rules/master
 NOW=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')
