@@ -1,6 +1,6 @@
 前提（2026-10-06 から）
-- coder 系サブエージェント（coder／coder-medium／coder-xhigh）と「実装の後の手順」（/code-review の level の選び方を含む）は、全プロジェクト共通の規則として C:\Projects\shared\claude-rules\（git 管理）に置いてある：
-  - agents\coder.md・coder-medium.md・coder-xhigh.md（ホームの .claude\agents はここへのジャンクション）
+- coder 系サブエージェント（coder-sonnet-medium／-high／-xhigh・coder-opus-high／-xhigh。2026-10-15 に旧名 coder／coder-medium／coder-xhigh から改名）と「実装の後の手順」（/code-review の level の選び方を含む）は、全プロジェクト共通の規則として C:\Projects\shared\claude-rules\（git 管理）に置いてある：
+  - agents\coder-*.md・verifier-*.md（ホームの .claude\agents はここへのジャンクション。規則の本文は coder-sonnet-high.md）
   - CLAUDE.md（ホームの .claude\CLAUDE.md が取り込む＝Claude Code がどのプロジェクトでも毎回読む）
 - 規則を変えるときは、このフォルダを直すだけで全プロジェクトに効く。各プロジェクトには写さない。つなぎ方は同じフォルダの README.md。
 - 各プロジェクトで要るのは、(1) 同じ名前の定義を消すこと（プロジェクト側が優先され、共通の更新が届かなくなる）、(2) 共通の coder が読む規約（検証コマンドなど）を AGENTS.md に揃えること、の2つだけ。下のプロンプトはそのためのもの。
@@ -10,9 +10,9 @@
 
 このプロジェクトを、全プロジェクト共通の coder 系サブエージェントに合わせてください。日本語で進めてください。
 
-1. まず読む：根の AGENTS.md と CLAUDE.md、サブフォルダの AGENTS.md／CLAUDE.md（あれば）、C:/Projects/shared/claude-rules の CLAUDE.md と agents/coder.md（共通の規則）。
+1. まず読む：根の AGENTS.md と CLAUDE.md、サブフォルダの AGENTS.md／CLAUDE.md（あれば）、C:/Projects/shared/claude-rules の CLAUDE.md と agents/coder-sonnet-high.md（共通の規則）。
 2. .claude/agents/ を見る。
-   - coder.md・coder-medium.md・coder-xhigh.md（共通と同じ名前）があれば、プロジェクト固有の中身（規約・検証コマンド・禁止事項）が AGENTS.md に書かれているか確かめ、無いものを AGENTS.md へ移してから、その3ファイルを消す（git 管理なら git rm）。
+   - 共通と同じ名前（coder-*.md・verifier-*.md）か旧名（coder.md・coder-medium.md・coder-xhigh.md・verifier.md）の定義があれば、プロジェクト固有の中身（規約・検証コマンド・禁止事項）が AGENTS.md に書かれているか確かめ、無いものを AGENTS.md へ移してから、そのファイルを消す（git 管理なら git rm）。
    - ほかの名前の定義（例 impl-*・review-*・○○-worker など）は消さない。役割が coder 系と重なるものは、整理案を最終報告に書く。
 3. 共通の coder は「根の AGENTS.md を Read で開き、その読む順に従う」だけで動く。AGENTS.md（または読む順で指す文書）に次が揃っているか確かめ、欠けていれば短い節（例「実装と検証」）を足す。中身は丸写しせず「どこを読めばよいか」を示す：
    - このプロジェクト固有の重要な規約と、スキーマ・設定などの正本の場所
@@ -31,7 +31,7 @@
 このプロジェクトを AGENTS.md 化し、併せて全プロジェクト共通の coder 系サブエージェントに合わせてください。日本語で進めてください。
 手本は C:\Projects\CRM（AGENTS.md・web/AGENTS.md・CLAUDE.md・web/CLAUDE.md）。構成と書き方を読んで倣う（CRM 固有の中身は持ち込まない）。
 
-1. まず読む：根とサブフォルダの CLAUDE.md（あれば）、手本の C:\Projects\CRM\AGENTS.md と CLAUDE.md、C:/Projects/shared/claude-rules の CLAUDE.md と agents/coder.md（共通の規則）。
+1. まず読む：根とサブフォルダの CLAUDE.md（あれば）、手本の C:\Projects\CRM\AGENTS.md と CLAUDE.md、C:/Projects/shared/claude-rules の CLAUDE.md と agents/coder-sonnet-high.md（共通の規則）。
    CLAUDE.md が無ければ、代わりに README・仕様書（SPEC など）・package.json などのビルド設定・.claude/agents/ の既存定義・Claude Code の自動メモリ（C:\Users\owner\.claude\projects\<このプロジェクト>\memory\）を読み、規約・検証コマンド・コミットの決まりを拾う。
 2. AGENTS.md 化：
    - CLAUDE.md があれば、根の CLAUDE.md を AGENTS.md へ移す（git 管理なら git mv で履歴を残す）。新しい CLAUDE.md は「@AGENTS.md」の1行だけにする。サブフォルダの CLAUDE.md も同じ形にする。
@@ -45,7 +45,7 @@
    - 元の CLAUDE.md の内容を1行も失わない。移した後、元の各行がどこへ行ったか（そのまま／言い換え／docs へ移動）を突き合わせ、最終報告に対応を短く書く。Claude Code だけに効く記述（.claude/ の設定・メモリ・スラッシュコマンドなど）は「Claude Code にしか見えないもの」へ寄せる。
    - Claude Code の自動メモリに「CLAUDE.md の〜」と書いた記録があれば、AGENTS.md を指すように直す。
 3. 共通の coder 系に合わせる（プロンプト①の手順2〜4と同じ）：
-   - .claude/agents/ に coder.md・coder-medium.md・coder-xhigh.md があれば、固有の中身を AGENTS.md へ移してから消す。ほかの名前の定義は消さず、重なりがあれば整理案を報告する。
+   - .claude/agents/ に共通と同じ名前か旧名（プロンプト①の手順2）の定義があれば、固有の中身を AGENTS.md へ移してから消す。ほかの名前の定義は消さず、重なりがあれば整理案を報告する。
    - AGENTS.md に、固有の規約と正本の場所・実装後に回す検証コマンド・コミットの決まりが揃っているか確かめ、欠けていれば短い節を足す。
 4. 「Claude Code にしか見えないもの」へ次の1行を足す（使い分けや実装後の手順の文が元の CLAUDE.md にあれば、この1行に置き換える）：
    - 「サブエージェント（coder 系）の使い分けと、実装の後の手順（/code-review の level の選び方を含む）は全プロジェクト共通＝C:\Projects\shared\claude-rules\（CLAUDE.md と agents\coder*.md・ホームの .claude から読み込む）。このリポの .claude/agents/ に同じ名前を作らない。」

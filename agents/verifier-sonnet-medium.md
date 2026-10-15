@@ -1,6 +1,6 @@
 ---
-name: verifier
-description: 実機／画面の検証専用サブエージェント。親が用意した検証用の環境で、親のチェック表どおりに操作し、測った値と画面写真の保存先を返す。コードもデータの正本も直さない。
+name: verifier-sonnet-medium
+description: 実機／画面の検証専用サブエージェント（Sonnet・effort medium）。親が用意した検証用の環境で、親のチェック表どおりに操作し、測った値と画面写真の保存先を返す。コードもデータの正本も直さない。
 model: sonnet
 effort: medium
 ---

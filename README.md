@@ -8,9 +8,9 @@ C:\Projects 配下のどのプロジェクトでも効く、Claude Code 用の�
 | ファイル | 中身 |
 |---|---|
 | `CLAUDE.md` | サブエージェントの使い分け・実装の後の手順（`/code-review` の level の選び方） |
-| `agents/coder.md` | 実装担当サブエージェント（effort high）。規則の本文はここだけ |
-| `agents/coder-medium.md`・`agents/coder-xhigh.md` | effort 違い。本文は「coder.md を読め」だけ |
-| `agents/verifier.md` | 実機／画面の検証担当（Sonnet・effort medium・2026-10-13）。親のチェック表どおりに操作して値と画面写真を返す（CLAUDE.md の「実機／画面の検証」） |
+| `agents/coder-sonnet-high.md` | 実装担当サブエージェント（Sonnet・effort high）。規則の本文はここだけ |
+| `agents/coder-sonnet-medium.md`・`agents/coder-sonnet-xhigh.md`・`agents/coder-opus-high.md`・`agents/coder-opus-xhigh.md` | モデル・effort 違い。本文は「coder-sonnet-high.md を読め」だけ |
+| `agents/verifier-sonnet-medium.md` | 実機／画面の検証担当（Sonnet・effort medium・2026-10-13）。親のチェック表どおりに操作して値と画面写真を返す（CLAUDE.md の「実機／画面の検証」） |
 | `prompts/プロジェクトを共通規則に合わせる.txt` | 各プロジェクトを共通規則に合わせる（と AGENTS.md 化する）ためのプロンプト |
 | `cloud/setup.sh` | クラウドの環境の初期化スクリプト（下の「クラウド」） |
 
@@ -33,7 +33,7 @@ New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\agents" -Target "C:\
 ```
 
 `%USERPROFILE%\.claude\CLAUDE.md` に `@C:/Projects/shared/claude-rules/CLAUDE.md` の1行を書く（既にあれば先頭に足す）。
-`agents` の中の `C:\Projects\shared\claude-rules\agents\coder.md` という絶対パスも、置き場所が変わるなら直す。
+`agents` の中の `coder-sonnet-high.md` を指すパスも、置き場所が変わるなら直す。
 
 ### 効いているかの確かめ方
 
@@ -43,7 +43,10 @@ New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\agents" -Target "C:\
 claude -p "Agent ツールで使えるサブエージェントの種類の名前だけを1行に1つ列挙して" --model haiku
 ```
 
-`coder`・`coder-medium`・`coder-xhigh`・`verifier` が出れば効いている。
+`coder-sonnet-medium`・`coder-sonnet-high`・`coder-sonnet-xhigh`・`coder-opus-high`・`coder-opus-xhigh`・`verifier-sonnet-medium` が出れば効いている。
+
+**名前の決まり**（2026-10-15）＝`役割-モデル-effort`。人が名前だけでモデルと effort を分かるように。呼び出しで model を上書きすると名前と中身が食い違うので、上書きせずにその名前の定義を足す。
+**定義の名前を変えた・足したら `cloud/setup.sh` の取得の一覧も直し、環境のスクリプトを丸ごと貼り直す**（日付だけの書き換えでは古い一覧のまま＝消えた名前を取りに行って失敗し、規則が読まれなくなる）。
 
 ## クラウド（claude.ai/code）＝環境の初期化スクリプトで取ってくる（2026-10-10）
 
@@ -59,5 +62,5 @@ claude -p "Agent ツールで使えるサブエージェントの種類の名前
 
 ## 注意
 
-- プロジェクトの `.claude/agents/` に同じ名前（coder など）を作らない＝そちらが優先され、ここの更新が届かなくなる。
+- プロジェクトの `.claude/agents/` に同じ名前（coder-sonnet-high など）を作らない＝そちらが優先され、ここの更新が届かなくなる。
 - 書き換えたら NUL や制御文字が無いことを確かめる（`tr -cd '\000\010' < ファイル | wc -c` が 0）。シェルの sed／Python でバックスラッシュを含むパスを書かない（`\a`・`\00` などが制御文字に化ける）＝Edit ツールで直す。
